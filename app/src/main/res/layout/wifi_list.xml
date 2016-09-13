@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/btnBack2"
+        android:onClick="onSwitch"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SSID 1"
+        android:id="@+id/txtSSID1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/txtMAC1"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MAC 1"
+        android:id="@+id/txtMAC1"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:width="400px"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="level 1"
+        android:id="@+id/txtlevel1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/txtMAC1"
+        android:layout_toEndOf="@+id/txtMAC1"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SSID 2"
+        android:id="@+id/txtSSID2"
+        android:layout_below="@+id/txtSSID1"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/txtMAC2"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MAC 2"
+        android:id="@+id/txtMAC2"
+        android:layout_alignTop="@+id/txtSSID2"
+        android:width="400px"
+        android:layout_alignStart="@+id/txtMAC1"
+        android:layout_toStartOf="@+id/txtlevel1"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="level 2"
+        android:id="@+id/txtlevel2"
+        android:layout_alignTop="@+id/txtMAC2"
+        android:layout_alignEnd="@+id/txtlevel1"
+        android:layout_toEndOf="@+id/txtMAC1"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SSID 3"
+        android:id="@+id/txtSSID3"
+        android:layout_below="@+id/txtSSID2"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/btnBack2"
+        android:layout_toStartOf="@+id/txtMAC3"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MAC 3"
+        android:id="@+id/txtMAC3"
+        android:layout_above="@+id/btnBack2"
+        android:width="400px"
+        android:layout_alignTop="@+id/txtSSID3"
+        android:layout_toStartOf="@+id/txtlevel2"
+        android:textSize="45px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="level 3"
+        android:id="@+id/txtlevel3"
+        android:layout_below="@+id/txtlevel2"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/btnBack2"
+        android:layout_toEndOf="@+id/txtMAC3"
+        android:textSize="45px" />
+</RelativeLayout>
