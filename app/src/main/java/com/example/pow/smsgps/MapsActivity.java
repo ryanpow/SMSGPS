@@ -60,9 +60,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static GoogleMap mMap;
     private static final int LOCATION_REQUEST_CODE = 101;
     ArrayList<SelectUser> selectUsers;
-    List<SelectUser> temp;
     ListView listView;
-    Cursor phones, email;
+    Cursor phones;
     ContentResolver resolver;
     SearchView search;
     SelectUserAdapter adapter;
@@ -71,7 +70,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     static String txtLocation, txtWifi;
     public LocationManager mLocationManager;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-//     String wifiresult=IncomingSMSReceiver.wifiresult;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -84,6 +82,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     List<ScanResult> wifiList;
     StringBuilder sb = new StringBuilder();
 
+//    This method is used the moment the application starts.
+//    It will display the mainpage and generate the map.
+//    Request permission if needed.
+//    It will also start scanning for information.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
          mainWifi.startScan();
      }
+//    This method is called to destroy the map fragment, preventing overload of fragments
      public void onDestroyView() {
          FragmentManager fm = getSupportFragmentManager();
          Fragment fragment = (fm.findFragmentById(R.id.map));
@@ -128,14 +131,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          ft.remove(fragment);
          ft.commit();
      }
-     public boolean onCreateOptionsMenu(Menu menu) {
-         menu.add(0, 0, 0, "Refresh");
-         return super.onCreateOptionsMenu(menu);}
-     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-         mainWifi.startScan();
-         return super.onMenuItemSelected(featureId, item);}
-
+//    This class is used when the application starts
+//    It is for detecting WiFi information
      class WifiReceiver extends BroadcastReceiver {
+//    This method runs when WiFi information gets updated
+//    It will convert the WiFi info to string for storing of info
          public void onReceive(Context c, Intent intent) {
              sb = new StringBuilder();
              wifiList = mainWifi.getScanResults();
@@ -159,10 +159,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              System.out.println(txtWifi);
          }
      }
-     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
-         @Override
+
+//         This allows the GPS info to be received
+    private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
+        @Override
+//         This method gets called when the GPS info changes
+//         It converts the info into string coordinates for storing
          public void onLocationChanged(Location location) {
-             //code
              System.out.println("onLocationChanged");
 
              mLastLocation = location;
@@ -189,6 +192,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              //turns off gps services
          }
      };
+//    This method runs when the user wants to view the WiFi page
+//    It will generate the WiFi page and assign the stored external WiFi info to the text fields
+//    If there is no SSID from the stored WiFi external info, "No SSID" will be displayed
      public void wifi_list(){
          setContentView(R.layout.wifi_list);
          txtSSID1 = (TextView) findViewById(R.id.txtSSID1);
@@ -220,17 +226,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              txtSSID3.setText("(No SSID)");
          }
      }
+//    This method is called when the user wants to view their contacts list for finding a contact
     private void showContacts() {
         // Check the SDK version and whether the permission is already granted or not.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
-            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
-            // Android version is lesser than 6.0 or the permission is already granted.
+// Android version is lesser than 6.0 or the permission is already granted.
+//   Will call the method contactpopup()
             contactpopup();
         }
     }
-
+//  This method will generate and display the contact list
+//  It will generate a select button to allow the user to choose which contact they want to find
     public void contactpopup() {
          setContentView(R.layout.contactpopup);
          ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.READ_CONTACTS);
@@ -244,7 +252,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
          search = (SearchView) findViewById(R.id.searchView);
 
-         //*** setOnQueryTextListener ***
          search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
              @Override
@@ -264,9 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          (findViewById(R.id.btnSelect)).setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
-                 // user BoD suggests using Intent.ACTION_PICK instead of .ACTION_GET_CONTENT to avoid the chooser
                  Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                 // BoD con't: CONTENT_TYPE instead of CONTENT_ITEM_TYPE
                  intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
                  startActivityForResult(intent, 1);
              }
@@ -300,14 +305,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                      SelectUser selectUser = new SelectUser();
                      selectUser.setName(name);
                      selectUser.setPhone(phoneNumber);
-                     selectUser.setEmail(id);
                      selectUser.setCheckedBox(false);
                      selectUsers.add(selectUser);
                  }
              } else {
                  Log.e("Cursor close 1", "----------------");
              }
-             //phones.close();
              return null;
          }
 
@@ -317,7 +320,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              adapter = new SelectUserAdapter(selectUsers, MapsActivity.this);
              listView.setAdapter(adapter);
 
-             // Select item on listclick
+             // Select itail on listclick
              listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                  @Override
                  public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -331,7 +334,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              listView.setFastScrollEnabled(true);
          }
      }
-
+//  This method is called when a contact is selected in the contact list
+//  It will send a SMS with a specific "request" code to the contact
      protected void onActivityResult(int requestCode, int resultCode, Intent data) {
          if (data != null) {
              Uri uri = data.getData();
@@ -378,14 +382,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          Toast.makeText(this, type + ": " + number, Toast.LENGTH_LONG).show();
      }
 
-
+//    This method is called the moment the SMS is sent by the contact list successfully.
+//    It will bring the user back to the main page
      public void back(){
          setContentView(R.layout.activity_maps);
          SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                  .findFragmentById(R.id.map);
          mapFragment.getMapAsync(this);
      }
-
+//    This method is called whenever a button is pressed to change layouts only
+//    It assigns some of the buttons to their appropriate methods
+//    It will generate the map and destroy it if needed
      public void onSwitch(View view) {
          if (view.getId() == R.id.btnBack) {
              setContentView(R.layout.activity_maps);
@@ -411,7 +418,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          }
 
      }
-
+//   This method is for the zoom buttons
+//   It allows the map to zoom in and zoom out with the buttons
      public void onZoom(View view) {
          if (view.getId() == R.id.btnzoomin) {
              mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
@@ -421,7 +429,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          }
      }
 
-
+//   This method is for the search address bar
+//   It connects to the google map database with geocoder
      public void onSearch(View view) {
          EditText location_tf = (EditText) findViewById(R.id.txtAddress);
          String location = location_tf.getText().toString();
@@ -439,7 +448,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
          }
      }
-
+//    This method is for requesting permission for location for Android Version 6.0
      protected void requestPermission(String permissionType, int
              requestCode) {
          int permission = ContextCompat.checkSelfPermission(this,
@@ -450,7 +459,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              );
          }
      }
-
+//    This method is for requesting permission for location for Android Version 6.0
      @Override
      public void onRequestPermissionsResult(int requestCode,
                                             String permissions[], int[]
@@ -474,7 +483,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              }
          }
      }
-
+//   This method always runs when the map is generated
+//   It makes the map default location to be Temasek Polytechnic
+//   If there are friend's external GPS info stored, a marker will be placed and the map camera will move on the friend's location instead
      @Override
      public void onMapReady(GoogleMap googleMap) {
          mMap = googleMap;

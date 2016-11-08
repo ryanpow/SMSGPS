@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
 public class SelectUserAdapter extends BaseAdapter {
 
     public List<SelectUser> _data;

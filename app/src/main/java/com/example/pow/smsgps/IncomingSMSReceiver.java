@@ -12,7 +12,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
+// This class is always running in the background
 public class IncomingSMSReceiver extends BroadcastReceiver{
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
     String txtLocation= MapsActivity.txtLocation;
@@ -20,6 +20,10 @@ public class IncomingSMSReceiver extends BroadcastReceiver{
     static Double latitude,longitude;
     public static String wifiresult,SSID1,SSID2,SSID3,MAC1,MAC2,MAC3,level1,level2,level3;
 
+// This method runs whenever an SMS is sent to the phone
+// It scans the SMS for specific codes
+// If a "request" code is detected, it will reply the sender with another SMS that contains a "info" code with the GPS and WiFi info on it
+// If a "info" code is detected, it will store the info in the SMS as external info and display them on the map and WiFi layout.
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(SMS_RECEIVED)) {

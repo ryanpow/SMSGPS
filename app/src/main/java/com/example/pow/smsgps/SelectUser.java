@@ -1,5 +1,5 @@
 package com.example.pow.smsgps;
-
+//This class is for populating the listview in from the contact list
 public class SelectUser {
     String name;
 
@@ -30,16 +30,5 @@ public class SelectUser {
     public void setName(String name) {
         this.name = name;
     }
-
-    String email;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 
 }
