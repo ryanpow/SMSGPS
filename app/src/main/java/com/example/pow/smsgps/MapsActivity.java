@@ -60,13 +60,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static GoogleMap mMap;
     private static final int LOCATION_REQUEST_CODE = 101;
     ArrayList<SelectUser> selectUsers;
-    ListView listView;
     Cursor phones;
     ContentResolver resolver;
     SearchView search;
     SelectUserAdapter adapter;
     private Location mLastLocation;
-    public static TextView mainLabel, txtSSID1, txtSSID2, txtSSID3, txtMAC1, txtMAC2, txtMAC3, txtlevel1, txtlevel2, txtlevel3;
+    public static TextView txtSSID1, txtSSID2, txtSSID3, txtMAC1, txtMAC2, txtMAC3, txtlevel1, txtlevel2, txtlevel3;
     static String txtLocation, txtWifi;
     public LocationManager mLocationManager;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
@@ -108,7 +107,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mainLabel = (TextView) findViewById(R.id.mainLabel);
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
         int LOCATION_REFRESH_TIME = 0;
         int LOCATION_REFRESH_DISTANCE = 0;
@@ -173,7 +171,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              txtLocation = ("AQOZkasQSM"+":"+
                       String.valueOf(location.getLatitude()) + "," +
                       String.valueOf(location.getLongitude()));
-             mainLabel.setText(txtLocation);
          }
 
          @Override
@@ -244,30 +241,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.READ_CONTACTS);
          selectUsers = new ArrayList<SelectUser>();
          resolver = this.getContentResolver();
-         listView = (ListView) findViewById(R.id.contacts_list);
-
          phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
          LoadContact loadContact = new LoadContact();
          loadContact.execute();
-
-         search = (SearchView) findViewById(R.id.searchView);
-
-         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-             @Override
-             public boolean onQueryTextSubmit(String query) {
-
-
-                 return false;
-             }
-
-             @Override
-             public boolean onQueryTextChange(String newText) {
-
-                 adapter.filter(newText);
-                 return false;
-             }
-         });
          (findViewById(R.id.btnSelect)).setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
@@ -318,20 +294,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          protected void onPostExecute(Void aVoid) {
              super.onPostExecute(aVoid);
              adapter = new SelectUserAdapter(selectUsers, MapsActivity.this);
-             listView.setAdapter(adapter);
 
-             // Select itail on listclick
-             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                 @Override
-                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                     Log.e("search", "here---------------- listener");
-
-                     SelectUser data = selectUsers.get(i);
-                 }
-             });
-
-             listView.setFastScrollEnabled(true);
          }
      }
 //  This method is called when a contact is selected in the contact list
@@ -407,9 +370,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              mapFragment.getMapAsync(this);
          }
          if (view.getId() == R.id.btnContact) {
-             setContentView(R.layout.contactpopup);
              onDestroyView();
              showContacts();
+             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+             intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+             startActivityForResult(intent, 1);
          }
          if (view.getId() == R.id.btnWifi) {
              setContentView(R.layout.wifi_list);
@@ -501,7 +466,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          else
         {
             LatLng latLng = new LatLng(IncomingSMSReceiver.latitude,IncomingSMSReceiver.longitude);
-            MapsActivity.mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+            MapsActivity.mMap.addMarker(new MarkerOptions().position(latLng).title("Contact"));
             MapsActivity.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
      }

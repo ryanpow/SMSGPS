@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 // This class is always running in the background
@@ -18,6 +19,7 @@ public class IncomingSMSReceiver extends BroadcastReceiver{
     String txtLocation= MapsActivity.txtLocation;
     String txtWifi= MapsActivity.txtWifi;
     static Double latitude,longitude;
+    Marker marker;
     public static String wifiresult,SSID1,SSID2,SSID3,MAC1,MAC2,MAC3,level1,level2,level3;
 
 // This method runs whenever an SMS is sent to the phone
@@ -73,10 +75,14 @@ public class IncomingSMSReceiver extends BroadcastReceiver{
                     latitude = Double.parseDouble(latlong[0]);
                     longitude = Double.parseDouble(latlong[1]);
                     LatLng latLng = new LatLng(latitude,longitude);
-                    MapsActivity.mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-                    MapsActivity.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                    System.out.println(latitude);
-                    System.out.println(longitude);
+                    if(marker == null) {
+                        marker=MapsActivity.mMap.addMarker(new MarkerOptions().position(latLng).title("Contact"));
+                        MapsActivity.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    } else {
+                        marker.remove();
+                        marker=MapsActivity.mMap.addMarker(new MarkerOptions().position(latLng).title("Contact"));
+                        MapsActivity.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    }
                 }
                 if (message.startsWith("dHJjhnsjJ"))
                 {
@@ -84,7 +90,6 @@ public class IncomingSMSReceiver extends BroadcastReceiver{
                     this.abortBroadcast();
                     String[] separated = message.split("@");
                     wifiresult=separated[1];
-                    MapsActivity.mainLabel.setText(wifiresult);
                     String[] wifiinfo = wifiresult.split("!");
                     String wifi1=wifiinfo[0];
                     String wifi2=wifiinfo[1];
